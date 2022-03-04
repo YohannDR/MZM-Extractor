@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj": {}
+    "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj": {}
   },
   "projects": {
-    "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj": {
+    "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
+        "projectUniqueName": "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
         "projectName": "MZM-Extractor",
-        "projectPath": "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
-        "packagesPath": "C:\\Users\\Yohann\\.nuget\\packages\\",
-        "outputPath": "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\obj\\",
+        "projectPath": "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
+        "packagesPath": "C:\\Users\\demaisoy\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Yohann\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\demaisoy\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -39,6 +42,12 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -54,7 +63,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.405\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }

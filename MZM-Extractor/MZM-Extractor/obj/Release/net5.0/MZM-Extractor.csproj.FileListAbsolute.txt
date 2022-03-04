@@ -1,0 +1,16 @@
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\bin\Release\net5.0\MZM-Extractor.exe
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\bin\Release\net5.0\MZM-Extractor.deps.json
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\bin\Release\net5.0\MZM-Extractor.runtimeconfig.json
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\bin\Release\net5.0\MZM-Extractor.runtimeconfig.dev.json
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\bin\Release\net5.0\MZM-Extractor.dll
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\bin\Release\net5.0\MZM-Extractor.pdb
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.csproj.AssemblyReference.cache
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.AssemblyInfoInputs.cache
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.AssemblyInfo.cs
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.csproj.CoreCompileInputs.cache
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.dll
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\refint\MZM-Extractor.dll
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.pdb
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.genruntimeconfig.cache
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\ref\MZM-Extractor.dll
