@@ -46,6 +46,8 @@ namespace MZM_Extractor
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GetInt(int offset) => Source[offset] | (uint)Source[offset + 1] << 8 | (uint)Source[offset + 2] << 16 | (uint)Source[offset + 3] << 24;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GetPointer(int offset) => Source[offset] | (uint)Source[offset + 1] << 8 | (uint)Source[offset + 2] << 16 | (uint)Source[offset + 3] - 8 << 24;
 
         public static void CreateFile(string name)

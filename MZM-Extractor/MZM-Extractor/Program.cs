@@ -41,6 +41,7 @@ namespace MZM_Extractor
             }
 
             destination = $"{Directory.GetCurrentDirectory()}/{destination}";
+            dbSource = $"{Directory.GetCurrentDirectory()}/{dbSource}";
             if (Directory.Exists(destination)) Directory.Delete(destination, true); // Delete if exists
             Directory.CreateDirectory(destination); // Create destination folder
 
