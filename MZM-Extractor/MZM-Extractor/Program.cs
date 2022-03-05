@@ -47,12 +47,8 @@ namespace MZM_Extractor
             Source = File.ReadAllBytes(source);
             Destination = destination;
             Database = dbSource;
-            File.Create($"{destination}/data.h").Close(); // Create header
-            Header = new StreamWriter($"{destination}/data.h"); // Load header
+            Header = new(File.Create($"{destination}/data.h")); // Create header
             Parse();
-
-            Console.WriteLine((ushort)(Source[10000 + 1] << 8 + Source[10000]));
-            Console.WriteLine(Source[0]);
         }
     }
 }

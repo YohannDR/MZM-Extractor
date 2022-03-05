@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "I2z5oiFYgnl3Llqti9HGFeNXGsuc9F7FUG7AT0ViQi6Gpcx900bPTqW1av+9ZizAd7hSrPm7C58UFxz68X1C+g==",
+  "dgSpecHash": "mDsNvQqgMwMSq7LG9iWgjGSR6q0cZ3OfjXeaoLsCvC7TWIcZaUTB2DD8BbMcv1n/2liaffCeCJzYc+Lmh4XNIw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
+  "projectFilePath": "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\demaisoy\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+    "C:\\Users\\Yohann\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
   ],
   "logs": []
 }

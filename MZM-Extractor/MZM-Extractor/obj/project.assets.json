@@ -48,23 +48,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\demaisoy\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Yohann\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
+      "projectUniqueName": "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
       "projectName": "MZM-Extractor",
-      "projectPath": "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
-      "packagesPath": "C:\\Users\\demaisoy\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\demaisoy\\Documents\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\obj\\",
+      "projectPath": "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor.csproj",
+      "packagesPath": "C:\\Users\\Yohann\\.nuget\\packages\\",
+      "outputPath": "F:\\MZM\\Decompilation\\MZM-Extractor\\MZM-Extractor\\MZM-Extractor\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\demaisoy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Yohann\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -110,7 +106,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.405\\RuntimeIdentifierGraph.json"
       }
     }
   }
