@@ -149,17 +149,14 @@ namespace MZM_Extractor
                     break;
 
                 case DataType.OAM:
-                    for (int i = 0; i < Size; i++)
-                    {
-                        if (GetInt(Offset + (i * 8) + 4) != 0)
-                            ExtractOAMFrame((int)GetPointer(Offset + (i * 8)), i);
-                    }
-
                     OAMData oam = new(this);
                     for (int i = 0; i < Size; i++)
                     {
                         if (GetInt(Offset + (i * 8) + 4) != 0)
+                        {
+                            ExtractOAMFrame((int)GetPointer(Offset + (i * 8)), i);
                             oam.Info.Add(($"{Name}{i + 1}", GetInt(Offset + (i * 8) + 4)));
+                        }
                     }
                     OAM.Add(oam);
                     break;
