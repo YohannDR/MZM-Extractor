@@ -32,3 +32,5 @@ F:\MZM\Decompilation\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.
 F:\MZM\Decompilation\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\ref\MZM-Extractor.dll
 F:\MZM\Decompilation\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.pdb
 F:\MZM\Decompilation\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.genruntimeconfig.cache
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\bin\Release\net5.0\Newtonsoft.Json.dll
+C:\Users\demaisoy\Documents\MZM-Extractor\MZM-Extractor\MZM-Extractor\obj\Release\net5.0\MZM-Extractor.csproj.CopyComplete

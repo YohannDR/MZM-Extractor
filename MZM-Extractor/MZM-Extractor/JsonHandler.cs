@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json;
 using static MZM_Extractor.DataParser;
 
@@ -8,6 +8,7 @@ namespace MZM_Extractor
 {
     public static class JsonHandler
     {
+        private static Stopwatch SW = new();
         public static void GetData()
         {
             StreamReader reader = new(Database);
@@ -21,7 +22,8 @@ namespace MZM_Extractor
                 Data.CreateFile(file.Name);
                 foreach (JsonElement elem in file.Value.EnumerateArray())
                 {
-                    bool array = elem.GetProperty("IsArray").GetBoolean();
+                    SW.Start();
+                    byte array = elem.GetProperty("IsArray").GetByte();
                     DataType type;
                     switch (elem.GetProperty("Type").GetString())
                     {
@@ -48,10 +50,19 @@ namespace MZM_Extractor
                             type = DataType.u8;
                             break;
                     }
-                    if (array)
+                    if (array == 1)
                         type |= DataType.IsArray;
+                    else if (array == 2)
+                        type |= DataType.DoubleArray;
 
-                    new Data(elem.GetProperty("Name").GetString(), elem.GetProperty("Offset").GetInt32(), type, elem.GetProperty("Size").GetInt32()).Extract();
+                    string name = elem.GetProperty("Name").GetString();
+                    new Data(name, elem.GetProperty("Offset").GetInt32(), type, elem.GetProperty("Size").GetInt32()).Extract();
+                    SW.Stop();
+                    Console.Write($"- Extracted {name} to {file.Name} ; ");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"({SW.ElapsedTicks} ticks)");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    SW.Reset();
                 }
             }
         }

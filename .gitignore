@@ -263,3 +263,5 @@ FakesAssemblies/
 *.opt
 MZM-Extractor/MZM-Extractor/obj/project.nuget.cache
 *.cache
+
+*.gba

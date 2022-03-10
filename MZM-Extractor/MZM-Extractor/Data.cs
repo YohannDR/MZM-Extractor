@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using static MZM_Extractor.DataParser;
 
 namespace MZM_Extractor
@@ -17,7 +19,8 @@ namespace MZM_Extractor
         i32 = 5,
         Pointer = 6,
         OAM = 7,
-        IsArray = 128 // Flag
+        IsArray = 128, // Flag
+        DoubleArray = 256 // Flag
     }
 
     public class Data
@@ -28,7 +31,7 @@ namespace MZM_Extractor
         public int Offset;
         public DataType Type;
         public int Size; // Number of elements
-        public static List<OAMData> OAM;
+        public static List<OAMData> OAM = new();
 
         public Data(string name, int offset, DataType type, int size)
         {
@@ -50,18 +53,32 @@ namespace MZM_Extractor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GetPointer(int offset) => Source[offset] | (uint)Source[offset + 1] << 8 | (uint)Source[offset + 2] << 16 | (uint)Source[offset + 3] - 8 << 24;
 
+        public static void CloseFile()
+        {
+            if (OAM.Count != 0)
+            {
+                Stopwatch sw = Stopwatch.StartNew();
+                foreach (OAMData O in OAM)
+                    O.Write(); // Wrote OAM
+                sw.Stop();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write($"- Wrote OAM data to {((FileStream)(File.BaseStream)).Name.Split('\\').Last()} ; "); // Log write
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"({sw.ElapsedTicks} ticks)");
+            }
+            OAM.Clear(); // Clear OAM
+            File?.Close(); // Close file
+        }
+
         public static void CreateFile(string name)
         {
-            if (OAM != null)
-            {
-                foreach (OAMData O in OAM)
-                    O.Write();
-            }
-            OAM = new();
-            Header.WriteLine($"\n/* {name} */\n");
-            File?.Close();
-            File = new(System.IO.File.Create($"{Destination}/{name}"));
-            File.WriteLine("#include \"data.h\"\n");
+            CloseFile();
+            Header.WriteLine($"\n/* {name} */\n"); // Write comment to signal start of data
+            File = new(System.IO.File.Create($"{Destination}/{name}")); // Create file
+            File.WriteLine("#include \"data.h\"\n"); // Include data.h
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"\n- Created file {name}"); // Log creation
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public void Extract()
@@ -86,6 +103,30 @@ namespace MZM_Extractor
                                 text.Append(",\n");
                         }
                         File.WriteLine(text);
+                    }
+                    else if ((Type & DataType.DoubleArray) != 0)
+                    {
+                        int firstSize = Size >> 16; // Count
+                        int secondSize = Size & 65535; // Size of individual
+
+                        File.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}] = {{"); // Write definition
+                        Header.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}];"); // Write in header
+                        for (int i = 0; i < firstSize; i++)
+                        {
+                            text.Clear();
+                            text.Append("   { ");
+                            for (int y = 0; i < secondSize; y++)
+                            {
+                                u8_data = GetByte(Offset + y + (i * secondSize));
+                                text.Append("0x").Append(u8_data.ToString("X"));
+                                if (y == secondSize - 1)
+                                    text.Append(" },\n");
+                                else
+                                    text.Append(", ");
+                            }
+                            File.WriteLine(text);
+                        }
+                        File.WriteLine("};\n");
                     }
                     else
                     {
@@ -112,6 +153,31 @@ namespace MZM_Extractor
                                 text.Append(",\n");
                         }
                         File.WriteLine(text);
+                    }
+                    else if ((Type & DataType.DoubleArray) != 0)
+                    {
+                        int firstSize = Size >> 8; // Count
+                        int secondSize = Size & 255; // Size of individual
+
+                        File.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}] = {{"); // Write definition
+                        Header.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}];"); // Write in header
+
+                        for (int i = 0; i < firstSize; i++)
+                        {
+                            text.Clear();
+                            text.Append("   { ");
+                            for (int y = 0; y < secondSize; y++)
+                            {
+                                u16_data = GetShort(Offset + (y * 2) + (i * secondSize * 2));
+                                text.Append("0x").Append(u16_data.ToString("X"));
+                                if (y == secondSize - 1)
+                                    text.Append(" },");
+                                else
+                                    text.Append(", ");
+                            }
+                            File.WriteLine(text);
+                        }
+                        File.WriteLine("};");
                     }
                     else
                     {

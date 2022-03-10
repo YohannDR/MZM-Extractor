@@ -33,18 +33,13 @@ namespace MZM_Extractor
             SW.Start();
 
             JsonHandler.GetData();
-            /*Dictionary<string, List<Data>> data = JsonHandler.GetData();
-            foreach (string S in data.Keys)
-            {
-                Data.CreateFile(S);
-                foreach (Data D in data[S])
-                    D.Extract();
-            }*/
-            Data.CreateFile("zoomer_data.h");
-            SW.Stop();
-            Console.WriteLine(SW.ElapsedMilliseconds);
+            Data.CloseFile();
             Header.WriteLine("\n#endif /* DATA_H */");
             Header.Close();
+            SW.Stop();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\nExtracted everything in {SW.ElapsedMilliseconds} milliseconds");
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
