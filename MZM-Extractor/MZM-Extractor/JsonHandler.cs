@@ -51,7 +51,7 @@ namespace MZM_Extractor
                             break;
                     }
                     if (array == 1)
-                        type |= DataType.IsArray;
+                        type |= DataType.SingleArray;
                     else if (array == 2)
                         type |= DataType.DoubleArray;
 

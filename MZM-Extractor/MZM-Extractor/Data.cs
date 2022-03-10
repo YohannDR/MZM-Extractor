@@ -19,7 +19,7 @@ namespace MZM_Extractor
         i32 = 5,
         Pointer = 6,
         OAM = 7,
-        IsArray = 128, // Flag
+        SingleArray = 128, // Flag
         DoubleArray = 256 // Flag
     }
 
@@ -89,7 +89,7 @@ namespace MZM_Extractor
                 case DataType.i8:
                 case DataType.u8:
                     byte u8_data;
-                    if ((Type & DataType.IsArray) != 0)
+                    if ((Type & DataType.SingleArray) != 0)
                     {
                         File.WriteLine($"{Type & (DataType)127} {Name}[{Size}] = {{"); // Write definition
                         Header.WriteLine($"{Type & (DataType)127} {Name}[{Size}];"); // Write in header
@@ -139,7 +139,7 @@ namespace MZM_Extractor
                 case DataType.i16:
                 case DataType.u16:
                     ushort u16_data;
-                    if ((Type & DataType.IsArray) != 0)
+                    if ((Type & DataType.SingleArray) != 0)
                     {
                         File.WriteLine($"{Type & (DataType)127} {Name}[{Size}] = {{"); // Write definition
                         Header.WriteLine($"{Type & (DataType)127} {Name}[{Size}];"); // Write in header
@@ -190,7 +190,7 @@ namespace MZM_Extractor
                 case DataType.i32:
                 case DataType.u32:
                     uint u32_data;
-                    if ((Type & DataType.IsArray) != 0)
+                    if ((Type & DataType.SingleArray) != 0)
                     {
                         File.WriteLine($"{Type & (DataType)127} {Name}[{Size}] = {{"); // Write definition
                         Header.WriteLine($"{Type & (DataType)127} {Name}[{Size}];"); // Write in header
