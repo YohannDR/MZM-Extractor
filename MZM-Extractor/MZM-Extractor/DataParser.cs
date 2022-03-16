@@ -21,7 +21,7 @@ namespace MZM_Extractor
         private static void WriteIncludes()
         {
             for (int i = 0; i < Includes.Length; i++)
-                Header.WriteLine($"#include \"{Includes[i]}\"");
+                Header.WriteLine($"#include \"../src/{Includes[i]}\"");
         }
 
         public static void Parse()
