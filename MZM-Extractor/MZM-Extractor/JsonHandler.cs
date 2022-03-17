@@ -56,7 +56,7 @@ namespace MZM_Extractor
                         type |= DataType.DoubleArray;
 
                     string name = elem.GetProperty("Name").GetString();
-                    new Data(name, elem.GetProperty("Offset").GetInt32(), type, elem.GetProperty("Size").GetInt32()).Extract();
+                    new Data(name, elem.GetProperty("Offset").GetInt32(), type, elem.GetProperty("Size").GetInt64()).Extract();
                     SW.Stop();
                     Console.Write($"- Extracted {name} to {file.Name} ; ");
                     Console.ForegroundColor = ConsoleColor.Yellow;

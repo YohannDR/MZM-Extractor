@@ -30,10 +30,10 @@ namespace MZM_Extractor
         public string Name;
         public int Offset;
         public DataType Type;
-        public int Size; // Number of elements
+        public long Size; // Number of elements
         public static List<OAMData> OAM = new();
 
-        public Data(string name, int offset, DataType type, int size)
+        public Data(string name, int offset, DataType type, long size)
         {
             Name = name;
             Offset = offset;
@@ -175,8 +175,8 @@ namespace MZM_Extractor
         {
             T data;
             StringBuilder text = new();
-            int firstSize = Size >> 8; // Count
-            int secondSize = Size & 255; // Size of individual
+            long firstSize = Size >> 16; // Count
+            long secondSize = Size & 65535; // Size of individual
 
             File.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}] = {{"); // Write definition
             Header.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}];"); // Write in header
@@ -187,7 +187,7 @@ namespace MZM_Extractor
                 text.Append("   { ");
                 for (int y = 0; y < secondSize; y++)
                 {
-                    data = func.Invoke(Offset + (y * sizeof(T)) + (i * secondSize * 2));
+                    data = func.Invoke((int)(Offset + (y * sizeof(T)) + (i * secondSize * 2)));
                     text.Append("0x").Append(Unsafe.As<T, int>(ref data).ToString("X"));
                     if (y == secondSize - 1)
                         text.Append(" },");
