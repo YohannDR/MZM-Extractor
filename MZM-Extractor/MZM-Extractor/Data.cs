@@ -144,8 +144,8 @@ namespace MZM_Extractor
         private void ExtractOAMFrame(int offset, int id)
         {
             ushort part_count;
-            File.WriteLine($"struct oam_frame {Name}{id + 1} = {{");
-            Header.WriteLine($"struct oam_frame {Name}{id + 1};");
+            File.WriteLine($"struct OamFrame {Name}{id + 1} = {{");
+            Header.WriteLine($"struct OamFrame {Name}{id + 1};");
             part_count = GetShort(offset);
             File.WriteLine($"    0x{part_count:X},\n    {{");
             for (int i = 0; i < part_count; i++)
