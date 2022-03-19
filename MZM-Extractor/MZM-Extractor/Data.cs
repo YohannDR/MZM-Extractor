@@ -26,19 +26,23 @@ namespace MZM_Extractor
     public class Data
     {
         public static StreamWriter File; // Current file to write
+        public static List<OAMData> OAM = new();
 
         public string Name;
         public int Offset;
         public DataType Type;
         public long Size; // Number of elements
-        public static List<OAMData> OAM = new();
+        public List<string> PointerData;
+        public string PointerType;
 
-        public Data(string name, int offset, DataType type, long size)
+        public Data(string name, int offset, DataType type, long size, string pointerType = null, List<string> pointerData = null)
         {
             Name = name;
             Offset = offset;
             Type = type;
             Size = size;
+            PointerData = pointerData;
+            PointerType = pointerType;
         }
 
         // [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -137,6 +141,26 @@ namespace MZM_Extractor
                     }
                     OAM.Add(oam);
                     return;
+
+                case DataType.Pointer:
+                    if ((Type & (DataType)128) != 0)
+                    {
+                        Header.WriteLine($"{PointerType} {Name}[{Size}];");
+                        File.WriteLine($"{PointerType} {Name}[{Size}] = {{");
+                        for (int i = 0; i < PointerData.Count; i++)
+                        {
+                            File.Write($"    &{PointerData[i]}");
+                            if (i < PointerData.Count - 1)
+                                File.WriteLine(",");
+                        }
+                        File.WriteLine("\n};");
+                    }
+                    else
+                    {
+                        Header.WriteLine($"{PointerType} {Name};");
+                        File.WriteLine($"{PointerType} {Name} = {PointerData[0]};");
+                    }
+                    break;
             }
             File.WriteLine();
         }

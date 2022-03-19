@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Collections.Generic;
 using static MZM_Extractor.DataParser;
 
 namespace MZM_Extractor
@@ -46,6 +47,9 @@ namespace MZM_Extractor
                         case "OAM":
                             type = DataType.OAM;
                             break;
+                        case "Pointer":
+                            type = DataType.Pointer;
+                            break;
                         default:
                             type = DataType.u8;
                             break;
@@ -56,7 +60,16 @@ namespace MZM_Extractor
                         type |= DataType.DoubleArray;
 
                     string name = elem.GetProperty("Name").GetString();
-                    new Data(name, elem.GetProperty("Offset").GetInt32(), type, elem.GetProperty("Size").GetInt64()).Extract();
+                    if ((type & (DataType)127) != DataType.Pointer)
+                        new Data(name, elem.GetProperty("Offset").GetInt32(), type, elem.GetProperty("Size").GetInt64()).Extract();
+                    else
+                    {
+                        List<string> pointerData = new();
+                        foreach (JsonElement p in elem.GetProperty("Pointers").EnumerateArray())
+                            pointerData.Add(p.GetString());
+                        string realType = elem.GetProperty("pType").GetString();
+                        new Data(name, elem.GetProperty("Offset").GetInt32(), type, elem.GetProperty("Size").GetInt64(), realType, pointerData).Extract();
+                    }
                     SW.Stop();
                     Console.Write($"- Extracted {name} to {file.Name} ; ");
                     Console.ForegroundColor = ConsoleColor.Yellow;
