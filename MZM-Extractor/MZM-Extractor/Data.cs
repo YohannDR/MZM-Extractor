@@ -56,26 +56,34 @@ namespace MZM_Extractor
 
         // [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GetPointer(int offset) => Source[offset] | (uint)Source[offset + 1] << 8 | (uint)Source[offset + 2] << 16 | (uint)Source[offset + 3] - 8 << 24;
-
-        public static void CloseFile()
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CheckWriteOAM()
         {
             if (OAM.Count != 0)
             {
                 Stopwatch sw = Stopwatch.StartNew();
                 foreach (OAMData O in OAM)
-                    O.Write(); // Wrote OAM
+                    O.Write(); // Write OAM
+                OAM.Clear();
                 sw.Stop();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write($"- Wrote OAM data to {((FileStream)(File.BaseStream)).Name.Split('\\').Last()} ; "); // Log write
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"({sw.ElapsedTicks} ticks)");
+                Console.ForegroundColor = ConsoleColor.White;
             }
+        }
+
+        public static void CloseFile()
+        {
             OAM.Clear(); // Clear OAM
             File?.Close(); // Close file
         }
 
         public static void CreateFile(string name)
         {
+            CheckWriteOAM();
             CloseFile();
             Header.WriteLine($"\n/* {name} */\n"); // Write comment to signal start of data
             File = new(System.IO.File.Create($"{Destination}/{name}")); // Create file
@@ -87,6 +95,9 @@ namespace MZM_Extractor
 
         public void Extract()
         {
+            if (Type != DataType.OAM) // Check write OAM if next type isn't OAM
+                CheckWriteOAM();
+
             StringBuilder text = new();
             switch (Type & (DataType)127) // Remove array flag
             {

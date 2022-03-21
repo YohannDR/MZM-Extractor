@@ -17,6 +17,8 @@ namespace MZM_Extractor
             "oam.h",
             "types.h",
             "samus.h",
+            "particle.h",
+            "projectile.h",
             "sprites_AI/unused_sprites.h",
             "sprites_AI/charge_beam.h",
             "sprites_AI/deorem.h",
