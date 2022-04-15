@@ -261,7 +261,6 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
-MZM-Extractor/MZM-Extractor/obj/project.nuget.cache
 *.cache
 
 *.gba

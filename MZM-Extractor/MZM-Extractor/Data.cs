@@ -26,7 +26,7 @@ namespace MZM_Extractor
     public class Data
     {
         public static StreamWriter File; // Current file to write
-        public static List<OAMData> OAM = new();
+        public static List<OAMData> OAM = new List<OAMData>();
 
         public string Name;
         public int Offset;
@@ -98,7 +98,7 @@ namespace MZM_Extractor
             if (Type != DataType.OAM) // Check write OAM if next type isn't OAM
                 CheckWriteOAM();
 
-            StringBuilder text = new();
+            StringBuilder text = new StringBuilder();
             switch (Type & (DataType)127) // Remove array flag
             {
                 case DataType.i8:
@@ -178,20 +178,19 @@ namespace MZM_Extractor
 
         private void ExtractOAMFrame(int offset, int id)
         {
-            ushort part_count;
-            File.WriteLine($"struct OamFrame {Name}{id + 1} = {{");
-            Header.WriteLine($"struct OamFrame {Name}{id + 1};");
-            part_count = GetShort(offset);
-            File.WriteLine($"    0x{part_count:X},\n    {{");
+            ushort part_count = GetShort(offset);
+            File.WriteLine($"u16 {Name}{id + 1}[{part_count * 3 + 1}] = {{");
+            Header.WriteLine($"u16 {Name}{id + 1}[{part_count * 3 + 1}];");
+            File.WriteLine($"    0x{part_count:X},");
             for (int i = 0; i < part_count; i++)
-                File.WriteLine($"        {{ 0x{GetShort(offset + (i * 2) + 2):X}, 0x{GetShort(offset + (i * 2) + 4):X}, 0x{GetShort(offset + (i * 2) + 6):X} }},");
-            File.WriteLine("    }\n};\n");
+                File.WriteLine($"    0x{GetShort(offset + (i * 2) + 2):X}, 0x{GetShort(offset + (i * 2) + 4):X}, 0x{GetShort(offset + (i * 2) + 6):X}, ");
+            File.WriteLine("};\n");
         }
 
         public unsafe void ExtractArray<T>(Func<int, T> func) where T : unmanaged
         {
             T data;
-            StringBuilder text = new();
+            StringBuilder text = new StringBuilder();
             File.WriteLine($"{Type & (DataType)127} {Name}[{Size}] = {{"); // Write definition
             Header.WriteLine($"{Type & (DataType)127} {Name}[{Size}];"); // Write in header
             for (int i = 0; i < Size; i++)
@@ -209,7 +208,7 @@ namespace MZM_Extractor
         public unsafe void ExtractDoubleArray<T>(Func<int, T> func) where T : unmanaged
         {
             T data;
-            StringBuilder text = new();
+            StringBuilder text = new StringBuilder();
             long firstSize = Size >> 16; // Count
             long secondSize = Size & 65535; // Size of individual
 

@@ -9,7 +9,7 @@ namespace MZM_Extractor
 {
     public static class JsonHandler
     {
-        private static Stopwatch SW = new();
+        private static Stopwatch SW = new Stopwatch();
         public static void GetData()
         {
             StreamReader reader = new(Database);
@@ -64,7 +64,7 @@ namespace MZM_Extractor
                         new Data(name, elem.GetProperty("Offset").GetInt32(), type, elem.GetProperty("Size").GetInt64()).Extract();
                     else
                     {
-                        List<string> pointerData = new();
+                        List<string> pointerData = new List<string>();
                         foreach (JsonElement p in elem.GetProperty("Pointers").EnumerateArray())
                             pointerData.Add(p.GetString());
                         string realType = elem.GetProperty("pType").GetString();
