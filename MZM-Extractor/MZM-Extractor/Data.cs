@@ -86,7 +86,7 @@ namespace MZM_Extractor
             CheckWriteOAM();
             CloseFile();
             Header.WriteLine($"\n/* {name} */\n"); // Write comment to signal start of data
-            File = new(System.IO.File.Create($"{Destination}/{name}")); // Create file
+            File = new StreamWriter(System.IO.File.Create($"{Destination}/{name}")); // Create file
             File.WriteLine("#include \"data.h\"\n"); // Include data.h
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine($"\n- Created file {name}"); // Log creation
@@ -141,7 +141,7 @@ namespace MZM_Extractor
                     break;
 
                 case DataType.OAM:
-                    OAMData oam = new(this);
+                    OAMData oam = new OAMData(this);
                     for (int i = 0; i < Size; i++)
                     {
                         if (GetInt(Offset + (i * 8) + 4) != 0)

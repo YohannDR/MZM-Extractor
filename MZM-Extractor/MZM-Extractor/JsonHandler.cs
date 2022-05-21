@@ -12,7 +12,7 @@ namespace MZM_Extractor
         private static Stopwatch SW = new Stopwatch();
         public static void GetData()
         {
-            StreamReader reader = new(Database);
+            StreamReader reader = new StreamReader(Database);
             JsonDocument doc = JsonDocument.Parse(reader.ReadToEnd());
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return;
