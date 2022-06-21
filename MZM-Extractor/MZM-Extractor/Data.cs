@@ -146,8 +146,8 @@ namespace MZM_Extractor
                     {
                         if (GetInt(Offset + (i * 8) + 4) != 0)
                         {
-                            ExtractOAMFrame((int)GetPointer(Offset + (i * 8)), i);
-                            oam.Info.Add(($"{Name}{i + 1}", GetInt(Offset + (i * 8) + 4)));
+                            string frame_name = ExtractOAMFrame((int)GetPointer(Offset + (i * 8)), i);
+                            oam.Info.Add((frame_name, GetInt(Offset + (i * 8) + 4)));
                         }
                     }
                     OAM.Add(oam);
@@ -176,15 +176,24 @@ namespace MZM_Extractor
             File.WriteLine();
         }
 
-        private void ExtractOAMFrame(int offset, int id)
+        private string ExtractOAMFrame(int offset, int id)
         {
+            if (OAMData.WrittenOAMFrames.ContainsKey(offset))
+                return OAMData.WrittenOAMFrames[offset];
+
+            string frame_name = $"{Name}_frame{id}";
+
+            OAMData.WrittenOAMFrames.Add(offset, frame_name);
+
             ushort part_count = GetShort(offset);
-            File.WriteLine($"u16 {Name}{id + 1}[{part_count * 3 + 1}] = {{");
-            Header.WriteLine($"extern u16 {Name}{id + 1}[{part_count * 3 + 1}];");
+            File.WriteLine($"u16 {frame_name}[{part_count * 3 + 1}] = {{");
+            Header.WriteLine($"extern u16 {frame_name}[{part_count * 3 + 1}];");
             File.WriteLine($"    0x{part_count:X},");
             for (int i = 0; i < part_count; i++)
                 File.WriteLine($"    0x{GetShort(offset + (i * 2) + 2):X}, 0x{GetShort(offset + (i * 2) + 4):X}, 0x{GetShort(offset + (i * 2) + 6):X}, ");
             File.WriteLine("};\n");
+
+            return frame_name;
         }
 
         public unsafe void ExtractArray<T>(Func<int, T> func) where T : unmanaged

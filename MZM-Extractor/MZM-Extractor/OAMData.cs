@@ -6,6 +6,9 @@ namespace MZM_Extractor
 {
     public class OAMData
     {
+        // Array of already written OAM frames
+        public static Dictionary<int, string> WrittenOAMFrames = new Dictionary<int, string>();
+
         public Data Current;
         public List<(string name, uint timer)> Info = new List<(string name, uint timer)>();
 
