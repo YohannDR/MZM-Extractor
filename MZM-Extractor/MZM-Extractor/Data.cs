@@ -189,8 +189,9 @@ namespace MZM_Extractor
             File.WriteLine($"u16 {frame_name}[{part_count * 3 + 1}] = {{");
             Header.WriteLine($"extern u16 {frame_name}[{part_count * 3 + 1}];");
             File.WriteLine($"    0x{part_count:X},");
+            offset += 2;
             for (int i = 0; i < part_count; i++)
-                File.WriteLine($"    0x{GetShort(offset + (i * 2) + 2):X}, 0x{GetShort(offset + (i * 2) + 4):X}, 0x{GetShort(offset + (i * 2) + 6):X}, ");
+                File.WriteLine($"    0x{GetShort(offset + (i * 6)):X}, 0x{GetShort(offset + (i * 6) + 2):X}, 0x{GetShort(offset + (i * 6) + 4):X}, ");
             File.WriteLine("};\n");
 
             return frame_name;
