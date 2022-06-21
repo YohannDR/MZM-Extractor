@@ -26,7 +26,7 @@ namespace MZM_Extractor
     public class Data
     {
         public static StreamWriter File; // Current file to write
-        public static List<OAMData> OAM = new List<OAMData>();
+        public static OAMData OAM = new OAMData(); // OAM Data for the current file
 
         public string Name;
         public int Offset;
@@ -60,15 +60,15 @@ namespace MZM_Extractor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CheckWriteOAM()
         {
-            if (OAM.Count != 0)
+            if (OAM.HasContent)
             {
                 Stopwatch sw = Stopwatch.StartNew();
-                foreach (OAMData O in OAM)
-                    O.Write(); // Write OAM
-                OAM.Clear();
+
+                OAM.WriteData();
+
                 sw.Stop();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write($"- Wrote OAM data to {((FileStream)(File.BaseStream)).Name.Split('\\').Last()} ; "); // Log write
+                Console.Write($"- Wrote OAM data to {((FileStream)File.BaseStream).Name.Split('\\').Last()} ; "); // Log write
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"({sw.ElapsedTicks} ticks)");
                 Console.ForegroundColor = ConsoleColor.White;
@@ -77,7 +77,6 @@ namespace MZM_Extractor
 
         public static void CloseFile()
         {
-            OAM.Clear(); // Clear OAM
             File?.Close(); // Close file
         }
 
@@ -85,9 +84,13 @@ namespace MZM_Extractor
         {
             CheckWriteOAM();
             CloseFile();
+
+            OAM = new OAMData();
+
             Header.WriteLine($"\n/* {name} */\n"); // Write comment to signal start of data
             File = new StreamWriter(System.IO.File.Create($"{Destination}/{name}")); // Create file
             File.WriteLine("#include \"data.h\"\n"); // Include data.h
+
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine($"\n- Created file {name}"); // Log creation
             Console.ForegroundColor = ConsoleColor.White;
@@ -141,16 +144,14 @@ namespace MZM_Extractor
                     break;
 
                 case DataType.OAM:
-                    OAMData oam = new OAMData(this);
+                    OAMData.FrameData frameData = new OAMData.FrameData(Name);
+                    OAM.RegisterFrameData(frameData);
                     for (int i = 0; i < Size; i++)
                     {
-                        if (GetInt(Offset + (i * 8) + 4) != 0)
-                        {
-                            string frame_name = ExtractOAMFrame((int)GetPointer(Offset + (i * 8)), i);
-                            oam.Info.Add((frame_name, GetInt(Offset + (i * 8) + 4)));
-                        }
+                        uint timer = GetInt(Offset + (i * 8) + 4);
+                        if (timer != 0)
+                            OAM.RegisterOAMFrame((int)GetPointer(Offset + (i * 8)), i, timer, frameData);
                     }
-                    OAM.Add(oam);
                     return;
 
                 case DataType.Pointer:
@@ -174,27 +175,6 @@ namespace MZM_Extractor
                     break;
             }
             File.WriteLine();
-        }
-
-        private string ExtractOAMFrame(int offset, int id)
-        {
-            if (OAMData.WrittenOAMFrames.ContainsKey(offset))
-                return OAMData.WrittenOAMFrames[offset];
-
-            string frame_name = $"{Name}_frame{id}";
-
-            OAMData.WrittenOAMFrames.Add(offset, frame_name);
-
-            ushort part_count = GetShort(offset);
-            File.WriteLine($"u16 {frame_name}[{part_count * 3 + 1}] = {{");
-            Header.WriteLine($"extern u16 {frame_name}[{part_count * 3 + 1}];");
-            File.WriteLine($"    0x{part_count:X},");
-            offset += 2;
-            for (int i = 0; i < part_count; i++)
-                File.WriteLine($"    0x{GetShort(offset + (i * 6)):X}, 0x{GetShort(offset + (i * 6) + 2):X}, 0x{GetShort(offset + (i * 6) + 4):X}, ");
-            File.WriteLine("};\n");
-
-            return frame_name;
         }
 
         public unsafe void ExtractArray<T>(Func<int, T> func) where T : unmanaged
