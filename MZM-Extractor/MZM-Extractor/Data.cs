@@ -109,7 +109,7 @@ namespace MZM_Extractor
                         ExtractDoubleArray(GetByte);
                     else
                     {
-                        Header.WriteLine($"{Type} {Name};");
+                        Header.WriteLine($"extern {Type} {Name};");
                         File.WriteLine($"{Type} {Name} = 0x{GetByte(Offset)};");
                     }
                     break;
@@ -122,7 +122,7 @@ namespace MZM_Extractor
                         ExtractDoubleArray(GetShort);
                     else
                     {
-                        Header.WriteLine($"{Type} {Name};");
+                        Header.WriteLine($"extern {Type} {Name};");
                         File.WriteLine($"{Type} {Name} = 0x{GetShort(Offset)};");
                     }
                     break;
@@ -135,7 +135,7 @@ namespace MZM_Extractor
                         ExtractDoubleArray(GetInt);
                     else
                     {
-                        Header.WriteLine($"{Type} {Name};");
+                        Header.WriteLine($"extern {Type} {Name};");
                         File.WriteLine($"{Type} {Name} = 0x{GetInt(Offset)};");
                     }
                     break;
@@ -156,7 +156,7 @@ namespace MZM_Extractor
                 case DataType.Pointer:
                     if ((Type & (DataType)128) != 0)
                     {
-                        Header.WriteLine($"{PointerType} {Name}[{Size}];");
+                        Header.WriteLine($"extern {PointerType} {Name}[{Size}];");
                         File.WriteLine($"{PointerType} {Name}[{Size}] = {{");
                         for (int i = 0; i < PointerData.Count; i++)
                         {
@@ -168,7 +168,7 @@ namespace MZM_Extractor
                     }
                     else
                     {
-                        Header.WriteLine($"{PointerType} {Name};");
+                        Header.WriteLine($"extern {PointerType} {Name};");
                         File.WriteLine($"{PointerType} {Name} = {PointerData[0]};");
                     }
                     break;
@@ -180,7 +180,7 @@ namespace MZM_Extractor
         {
             ushort part_count = GetShort(offset);
             File.WriteLine($"u16 {Name}{id + 1}[{part_count * 3 + 1}] = {{");
-            Header.WriteLine($"u16 {Name}{id + 1}[{part_count * 3 + 1}];");
+            Header.WriteLine($"extern u16 {Name}{id + 1}[{part_count * 3 + 1}];");
             File.WriteLine($"    0x{part_count:X},");
             for (int i = 0; i < part_count; i++)
                 File.WriteLine($"    0x{GetShort(offset + (i * 2) + 2):X}, 0x{GetShort(offset + (i * 2) + 4):X}, 0x{GetShort(offset + (i * 2) + 6):X}, ");
@@ -192,7 +192,7 @@ namespace MZM_Extractor
             T data;
             StringBuilder text = new StringBuilder();
             File.WriteLine($"{Type & (DataType)127} {Name}[{Size}] = {{"); // Write definition
-            Header.WriteLine($"{Type & (DataType)127} {Name}[{Size}];"); // Write in header
+            Header.WriteLine($"extern {Type & (DataType)127} {Name}[{Size}];"); // Write in header
             for (int i = 0; i < Size; i++)
             {
                 data = func.Invoke(Offset + (i * sizeof(T)));
@@ -213,7 +213,7 @@ namespace MZM_Extractor
             long secondSize = Size & 65535; // Size of individual
 
             File.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}] = {{"); // Write definition
-            Header.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}];"); // Write in header
+            Header.WriteLine($"extern {Type & (DataType)255} {Name}[{firstSize}][{secondSize}];"); // Write in header
 
             for (int i = 0; i < firstSize; i++)
             {

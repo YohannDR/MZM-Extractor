@@ -17,7 +17,7 @@ namespace MZM_Extractor
             "oam.h",
             "types.h",
             "samus.h",
-            "particle.h",
+            /*"particle.h",
             "projectile.h",
             "sprites_AI/unused_sprites.h",
             "sprites_AI/charge_beam.h",
@@ -108,7 +108,7 @@ namespace MZM_Extractor
             "sprites_AI/escape_ship_pirate.h",
             "sprites_AI/chozo_ball.h",
             "sprites_AI/save_yes_no_cursor.h",
-            "sprites_AI/chozo_statue_movement.h"
+            "sprites_AI/chozo_statue_movement.h"*/
         };
 
         private static void WriteIncludes()

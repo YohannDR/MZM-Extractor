@@ -14,7 +14,7 @@ namespace MZM_Extractor
         public void Write()
         {
             Data.File.WriteLine($"struct FrameData {Current.Name}[{Current.Size}] = {{");
-            Header.WriteLine($"struct FrameData {Current.Name}[{Current.Size}];");
+            Header.WriteLine($"extern struct FrameData {Current.Name}[{Current.Size}];");
             for (int i = 0; i < Info.Count; i++)
             {
                 if (Info[i].timer != 0)
