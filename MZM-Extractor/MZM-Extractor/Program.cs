@@ -9,9 +9,9 @@ namespace MZM_Extractor
         static void Main(string[] args)
         {
             bool auto = false;
-            string source = "../mzm_us_baserom.gba";
-            string destination = "../data";
-            string dbSource = "../database.json";
+            string source = "mzm_us_baserom.gba";
+            string destination = "data";
+            string dbSource = "database.json";
 
             if (args.Length != 0)
             {
@@ -25,7 +25,7 @@ namespace MZM_Extractor
                     Console.WriteLine("- Source file (a vanilla MZM rom)");
                     Console.WriteLine("- Destination folder (where every extracted data file will be put");
                     Console.WriteLine("- Database file (file containing all the offsets, types and sizes for the data");
-                    Console.WriteLine("You may use -a to automatically use the default settings (../mzm_us_baserom.gba, ../data/, ../database.json)\n");
+                    Console.WriteLine("You may use -a to automatically use the default settings (mzm_us_baserom.gba, data/, database.json)\n");
                     return;
                 }
             }
