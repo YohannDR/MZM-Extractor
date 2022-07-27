@@ -7,220 +7,219 @@ using System.Diagnostics;
 using System.Linq;
 using static MZM_Extractor.DataParser;
 
-namespace MZM_Extractor
+namespace MZM_Extractor;
+
+public enum DataType
 {
-    public enum DataType
+    u8 = 0,
+    u16 = 1,
+    u32 = 2,
+    i8 = 3,
+    i16 = 4,
+    i32 = 5,
+    Pointer = 6,
+    OAM = 7,
+    SingleArray = 128, // Flag
+    DoubleArray = 256  // Flag
+}
+
+public class Data
+{
+    public static StreamWriter File;           // Current file to write
+    public static OAMData OAM = new OAMData(); // OAM Data for the current file
+
+    public string Name;
+    public int Offset;
+    public DataType Type;
+    public long Size; // Number of elements
+    public List<string> PointerData;
+    public string PointerType;
+
+    public Data(string name, int offset, DataType type, long size, string pointerType = null, List<string> pointerData = null)
     {
-        u8 = 0,
-        u16 = 1,
-        u32 = 2,
-        i8 = 3,
-        i16 = 4,
-        i32 = 5,
-        Pointer = 6,
-        OAM = 7,
-        SingleArray = 128, // Flag
-        DoubleArray = 256 // Flag
+        Name = name;
+        Offset = offset;
+        Type = type;
+        Size = size;
+        PointerData = pointerData;
+        PointerType = pointerType;
     }
 
-    public class Data
-    {
-        public static StreamWriter File; // Current file to write
-        public static OAMData OAM = new OAMData(); // OAM Data for the current file
+    // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte GetByte(int offset) => Source[offset];
 
-        public string Name;
-        public int Offset;
-        public DataType Type;
-        public long Size; // Number of elements
-        public List<string> PointerData;
-        public string PointerType;
+    // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ushort GetShort(int offset) => (ushort)(Source[offset] | (uint)Source[offset + 1] << 8);
 
-        public Data(string name, int offset, DataType type, long size, string pointerType = null, List<string> pointerData = null)
-        {
-            Name = name;
-            Offset = offset;
-            Type = type;
-            Size = size;
-            PointerData = pointerData;
-            PointerType = pointerType;
-        }
+    // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static uint GetInt(int offset) => Source[offset] | (uint)Source[offset + 1] << 8 | (uint)Source[offset + 2] << 16 | (uint)Source[offset + 3] << 24;
 
-        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte GetByte(int offset) => Source[offset];
-
-        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort GetShort(int offset) => (ushort)(Source[offset] | (uint)Source[offset + 1] << 8);
-
-        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint GetInt(int offset) => Source[offset] | (uint)Source[offset + 1] << 8 | (uint)Source[offset + 2] << 16 | (uint)Source[offset + 3] << 24;
-
-        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint GetPointer(int offset) => Source[offset] | (uint)Source[offset + 1] << 8 | (uint)Source[offset + 2] << 16 | (uint)Source[offset + 3] - 8 << 24;
+    // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static uint GetPointer(int offset) => Source[offset] | (uint)Source[offset + 1] << 8 | (uint)Source[offset + 2] << 16 | (uint)Source[offset + 3] - 8 << 24;
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheckWriteOAM()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CheckWriteOAM()
+    {
+        if (OAM.HasContent)
         {
-            if (OAM.HasContent)
-            {
-                Stopwatch sw = Stopwatch.StartNew();
+            Stopwatch sw = Stopwatch.StartNew();
 
-                OAM.WriteData();
+            OAM.WriteData();
 
-                sw.Stop();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write($"- Wrote OAM data to {((FileStream)File.BaseStream).Name.Split('\\').Last()} ; "); // Log write
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"({sw.ElapsedTicks} ticks)");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-        }
-
-        public static void CloseFile()
-        {
-            File?.Close(); // Close file
-        }
-
-        public static void CreateFile(string name)
-        {
-            CheckWriteOAM();
-            CloseFile();
-
-            OAM = new OAMData();
-
-            Header.WriteLine($"\n/* {name} */\n"); // Write comment to signal start of data
-            File = new StreamWriter(System.IO.File.Create($"{Destination}/{name}")); // Create file
-            File.WriteLine("#include \"data.h\"\n"); // Include data.h
-
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"\n- Created file {name}"); // Log creation
+            sw.Stop();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"- Wrote OAM data to {((FileStream)File.BaseStream).Name.Split('\\').Last()} ; "); // Log write
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"({sw.ElapsedTicks} ticks)");
             Console.ForegroundColor = ConsoleColor.White;
         }
+    }
 
-        public void Extract()
+    public static void CloseFile()
+    {
+        File?.Close(); // Close file
+    }
+
+    public static void CreateFile(string name)
+    {
+        CheckWriteOAM();
+        CloseFile();
+
+        OAM = new OAMData();
+
+        Header.WriteLine($"\n/* {name} */\n");                                   // Write comment to signal start of data
+        File = new StreamWriter(System.IO.File.Create($"{Destination}/{name}")); // Create file
+        File.WriteLine("#include \"data.h\"\n");                                 // Include data.h
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine($"\n- Created file {name}"); // Log creation
+        Console.ForegroundColor = ConsoleColor.White;
+    }
+
+    public void Extract()
+    {
+        if (Type != DataType.OAM) // Check write OAM if next type isn't OAM
+            CheckWriteOAM();
+
+        StringBuilder text = new StringBuilder();
+        switch (Type & (DataType)127) // Remove array flag
         {
-            if (Type != DataType.OAM) // Check write OAM if next type isn't OAM
-                CheckWriteOAM();
-
-            StringBuilder text = new StringBuilder();
-            switch (Type & (DataType)127) // Remove array flag
-            {
-                case DataType.i8:
-                case DataType.u8:
-                    if ((Type & DataType.SingleArray) != 0)
-                        ExtractArray(GetByte);
-                    else if ((Type & DataType.DoubleArray) != 0)
-                        ExtractDoubleArray(GetByte);
-                    else
-                    {
-                        Header.WriteLine($"extern {Type} {Name};");
-                        File.WriteLine($"{Type} {Name} = 0x{GetByte(Offset)};");
-                    }
-                    break;
-
-                case DataType.i16:
-                case DataType.u16:
-                    if ((Type & DataType.SingleArray) != 0)
-                        ExtractArray(GetShort);
-                    else if ((Type & DataType.DoubleArray) != 0)
-                        ExtractDoubleArray(GetShort);
-                    else
-                    {
-                        Header.WriteLine($"extern {Type} {Name};");
-                        File.WriteLine($"{Type} {Name} = 0x{GetShort(Offset)};");
-                    }
-                    break;
-
-                case DataType.i32:
-                case DataType.u32:
-                    if ((Type & DataType.SingleArray) != 0)
-                        ExtractArray(GetInt);
-                    else if ((Type & DataType.DoubleArray) != 0)
-                        ExtractDoubleArray(GetInt);
-                    else
-                    {
-                        Header.WriteLine($"extern {Type} {Name};");
-                        File.WriteLine($"{Type} {Name} = 0x{GetInt(Offset)};");
-                    }
-                    break;
-
-                case DataType.OAM:
-                    OAMData.FrameData frameData = new OAMData.FrameData(Name);
-                    OAM.RegisterFrameData(frameData);
-                    for (int i = 0; i < Size; i++)
-                    {
-                        uint timer = GetInt(Offset + (i * 8) + 4);
-                        if (timer != 0)
-                            OAM.RegisterOAMFrame((int)GetPointer(Offset + (i * 8)), i, timer, frameData);
-                    }
-                    return;
-
-                case DataType.Pointer:
-                    if ((Type & (DataType)128) != 0)
-                    {
-                        Header.WriteLine($"extern {PointerType} {Name}[{Size}];");
-                        File.WriteLine($"{PointerType} {Name}[{Size}] = {{");
-                        for (int i = 0; i < PointerData.Count; i++)
-                        {
-                            File.Write($"    &{PointerData[i]}");
-                            if (i < PointerData.Count - 1)
-                                File.WriteLine(",");
-                        }
-                        File.WriteLine("\n};");
-                    }
-                    else
-                    {
-                        Header.WriteLine($"extern {PointerType} {Name};");
-                        File.WriteLine($"{PointerType} {Name} = {PointerData[0]};");
-                    }
-                    break;
-            }
-            File.WriteLine();
-        }
-
-        public unsafe void ExtractArray<T>(Func<int, T> func) where T : unmanaged
-        {
-            T data;
-            StringBuilder text = new StringBuilder();
-            File.WriteLine($"{Type & (DataType)127} {Name}[{Size}] = {{"); // Write definition
-            Header.WriteLine($"extern {Type & (DataType)127} {Name}[{Size}];"); // Write in header
-            for (int i = 0; i < Size; i++)
-            {
-                data = func.Invoke(Offset + (i * sizeof(T)));
-                text.Append("   0x").Append(Unsafe.As<T, int>(ref data).ToString("X")); // Write Data
-                if (i == Size - 1)
-                    text.Append("\n};");
+            case DataType.i8:
+            case DataType.u8:
+                if ((Type & DataType.SingleArray) != 0)
+                    ExtractArray(GetByte);
+                else if ((Type & DataType.DoubleArray) != 0)
+                    ExtractDoubleArray(GetByte);
                 else
-                    text.Append(",\n");
+                {
+                    Header.WriteLine($"extern {Type} {Name};");
+                    File.WriteLine($"{Type} {Name} = 0x{GetByte(Offset)};");
+                }
+                break;
+
+            case DataType.i16:
+            case DataType.u16:
+                if ((Type & DataType.SingleArray) != 0)
+                    ExtractArray(GetShort);
+                else if ((Type & DataType.DoubleArray) != 0)
+                    ExtractDoubleArray(GetShort);
+                else
+                {
+                    Header.WriteLine($"extern {Type} {Name};");
+                    File.WriteLine($"{Type} {Name} = 0x{GetShort(Offset)};");
+                }
+                break;
+
+            case DataType.i32:
+            case DataType.u32:
+                if ((Type & DataType.SingleArray) != 0)
+                    ExtractArray(GetInt);
+                else if ((Type & DataType.DoubleArray) != 0)
+                    ExtractDoubleArray(GetInt);
+                else
+                {
+                    Header.WriteLine($"extern {Type} {Name};");
+                    File.WriteLine($"{Type} {Name} = 0x{GetInt(Offset)};");
+                }
+                break;
+
+            case DataType.OAM:
+                OAMData.FrameData frameData = new OAMData.FrameData(Name);
+                OAM.RegisterFrameData(frameData);
+                for (int i = 0; i < Size; i++)
+                {
+                    uint timer = GetInt(Offset + (i * 8) + 4);
+                    if (timer != 0)
+                        OAM.RegisterOAMFrame((int)GetPointer(Offset + (i * 8)), i, timer, frameData);
+                }
+                return;
+
+            case DataType.Pointer:
+                if ((Type & (DataType)128) != 0)
+                {
+                    Header.WriteLine($"extern {PointerType} {Name}[{Size}];");
+                    File.WriteLine($"{PointerType} {Name}[{Size}] = {{");
+                    for (int i = 0; i < PointerData.Count; i++)
+                    {
+                        File.Write($"    &{PointerData[i]}");
+                        if (i < PointerData.Count - 1)
+                            File.WriteLine(",");
+                    }
+                    File.WriteLine("\n};");
+                }
+                else
+                {
+                    Header.WriteLine($"extern {PointerType} {Name};");
+                    File.WriteLine($"{PointerType} {Name} = {PointerData[0]};");
+                }
+                break;
+        }
+        File.WriteLine();
+    }
+
+    public unsafe void ExtractArray<T>(Func<int, T> func) where T : unmanaged
+    {
+        T data;
+        StringBuilder text = new StringBuilder();
+        File.WriteLine($"{Type & (DataType)127} {Name}[{Size}] = {{");      // Write definition
+        Header.WriteLine($"extern {Type & (DataType)127} {Name}[{Size}];"); // Write in header
+        for (int i = 0; i < Size; i++)
+        {
+            data = func.Invoke(Offset + (i * sizeof(T)));
+            text.Append("   0x").Append(Unsafe.As<T, int>(ref data).ToString("X")); // Write Data
+            if (i == Size - 1)
+                text.Append("\n};");
+            else
+                text.Append(",\n");
+        }
+        File.WriteLine(text);
+    }
+
+    public unsafe void ExtractDoubleArray<T>(Func<int, T> func) where T : unmanaged
+    {
+        T data;
+        StringBuilder text = new StringBuilder();
+        long firstSize = Size >> 16;    // Count
+        long secondSize = Size & 65535; // Size of individual
+
+        File.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}] = {{");      // Write definition
+        Header.WriteLine($"extern {Type & (DataType)255} {Name}[{firstSize}][{secondSize}];"); // Write in header
+
+        for (int i = 0; i < firstSize; i++)
+        {
+            text.Clear();
+            text.Append("   { ");
+            for (int y = 0; y < secondSize; y++)
+            {
+                data = func.Invoke((int)(Offset + (y * sizeof(T)) + (i * secondSize * 2)));
+                text.Append("0x").Append(Unsafe.As<T, int>(ref data).ToString("X"));
+                if (y == secondSize - 1)
+                    text.Append(" },");
+                else
+                    text.Append(", ");
             }
             File.WriteLine(text);
         }
-
-        public unsafe void ExtractDoubleArray<T>(Func<int, T> func) where T : unmanaged
-        {
-            T data;
-            StringBuilder text = new StringBuilder();
-            long firstSize = Size >> 16; // Count
-            long secondSize = Size & 65535; // Size of individual
-
-            File.WriteLine($"{Type & (DataType)255} {Name}[{firstSize}][{secondSize}] = {{"); // Write definition
-            Header.WriteLine($"extern {Type & (DataType)255} {Name}[{firstSize}][{secondSize}];"); // Write in header
-
-            for (int i = 0; i < firstSize; i++)
-            {
-                text.Clear();
-                text.Append("   { ");
-                for (int y = 0; y < secondSize; y++)
-                {
-                    data = func.Invoke((int)(Offset + (y * sizeof(T)) + (i * secondSize * 2)));
-                    text.Append("0x").Append(Unsafe.As<T, int>(ref data).ToString("X"));
-                    if (y == secondSize - 1)
-                        text.Append(" },");
-                    else
-                        text.Append(", ");
-                }
-                File.WriteLine(text);
-            }
-            File.WriteLine("};");
-        }
+        File.WriteLine("};");
     }
 }
